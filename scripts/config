@@ -1,0 +1,4 @@
+SWAP_PART=/dev/sdb2
+MAIN_PART=/dev/sdb1
+
+MOUNT_POINT=/mnt/lfs

@@ -1,0 +1,70 @@
+#!/bin/bash
+
+source config
+
+exist_partitions() {
+	CHECK_MAIN_PART=$(lsblk -l -p -o NAME | grep $MAIN_PART)
+	CHECK_SWAP_PART=$(lsblk -l -p -o NAME | grep $SWAP_PART)
+	CHECK_PART="false"
+
+	if [ ! -z $CHECK_MAIN_PART ] && [ ! -z $CHECK_SWAP_PART ]
+	then
+		CHECK_PART="true"
+	else
+		echo -e "Please check your config : \n SWAP_PART or/and MAIN_PART"
+		exit 10
+	fi
+}
+
+format_partitions() {
+	if [ $CHECK_PART == "true" ]
+	then
+		mkfs.ext4 -F $MAIN_PART
+		mkswap -f $SWAP_PART
+	fi
+}
+
+erase_old_init() {
+	CHECK_EXIST_LFS_USER=$(cat /etc/passwd | grep lfs)
+	CHECK_MOUNT_LFS=$(mount | grep $MOUNT_POINT)
+
+	if [ ! -z $CHECK_EXIST_LFS_USER ]
+	then
+		if [ ! -z $CHECK_MOUNT_LFS ]
+		then
+			umount $MOUNT_POINT
+		fi
+
+		userdel -f lfs
+		rm -r /home/lfs
+		rm -r $MOUNT_POINT
+		groupdel lfs
+	fi
+}
+
+[ -z "$MOUNT_POINT" ] && MOUNT_POINT="/mnt/lfs"
+
+if [ -z "$MAIN_PART" -o -z "$SWAP_PART" ]
+then
+	echo -e "Please complete config file : \n SWAP_PART or/and MAIN_PART"
+fi
+
+echo -e "Please check config : \n MOUNT POINT : $MOUNT_POINT \n SWAP PARTITION : $SWAP_PART \n MAIN PARTITION : $MAIN_PART"
+echo -e "WARNING : this script erase all data of partition"
+
+
+read -p "Are you agree with config and erase data (y/n) : " USER_CHECKCONFIG
+
+case $USER_CHECKCONFIG in
+	y|Y)
+		echo "Let's go !"
+
+		erase_old_init
+		exist_partitions
+		format_partitions
+	;;
+	*)
+
+		echo "Nada !"
+	;;
+esac
