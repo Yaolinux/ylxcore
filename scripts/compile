@@ -1,0 +1,24 @@
+#!/bin/bash
+
+URL_REPO="http://repo.labo-linux.fr/sources"
+DIR_REPO="$LFS/sources"
+CHOICE=$1
+
+case $CHOICE in
+    "-d"|"--download")
+        echo "Download source from $URL_REPO"
+
+        if [ ! -e wlist ]
+        then
+            echo "The WLIST file is not present."
+        fi
+
+        while read file
+        do
+            wget --progress=bar:force -nv "$URL_REPO/$file" -P "$DIR_REPO"
+        done < wlist
+        ;;
+    *)
+        echo "Nothing to do !"
+        ;;
+esac
