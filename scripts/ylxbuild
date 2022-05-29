@@ -1,0 +1,171 @@
+#!/bin/bash
+
+#
+#  Copyright (c) 2021 - Yaolinux Teams
+#
+# This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# USA.
+#
+#
+
+get_filename() {
+	local FILE=$(echo $1 | sed 's|^.*://.*/||g')
+
+	if [ "$FILE" != "$1" ]; then
+		FILE="$PKGMK_SOURCE_DIR/$FILE"
+	fi
+
+	echo $FILE
+}
+
+source_decompress() {
+	_information $prefix "Décompression des sources"
+	cd $build_arbo/$NAME/sources
+	for tarball in ${SRCNAME[@]};
+	do
+		LOCAL_FILENAME=$(get_filename $tarball)
+		case $LOCAL_FILENAME in
+			*.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
+				tar xf $tarball -C YLX_WORK_SOURCES
+				;;
+			*)
+				cp -rf $build_dir/$tarball YLX_WORK_SOURCES
+				;;
+
+		esac
+	done
+}
+
+source_postdecompress() {
+	_information $prefix "Vérification des sources"
+	cd $build_arbo/$NAME/sources
+	for tarball in $TAR;
+	do
+		folder_pkg=$(tar tf $tarball | head -1)
+	done
+}
+
+build_check() {
+	_information $prefix "Vérification du fichier build"
+	if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
+	if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 101; fi
+	if [ -z $RELEASE ]; then RELEASE=1; fi
+	if [ -z $DEPENDS ]; then _information $prefix "Paquet sans dépendances"; fi
+	if [ -n $RUNTIMES ]; then _warning $prefix "Paquet avec des runtimes définies"; fi
+}
+
+build_init() {
+	
+		if [ ! -d $YLX_WORK_SOURCES ]
+		then
+			mkdir -pv $YLX_WORK_SOURCES
+		fi
+	
+	if [ -z $MAKECORE ]; then
+		NBCORE=$(nproc)
+		export MAKEFLAGS="-j ${NBCORE}"
+	else
+		export MAKEFLAGS="-j ${MAKECORE}"
+	fi
+}
+
+clean_build() {
+	if [ -d $YLX_WORK_SOURCES ]
+		then
+			rm -rf $YLX_WORK_SOURCES
+		fi
+}
+
+pkg_build() {
+	build_init
+	build_check
+	source_decompress
+	if [[ $? != 0 ]]; then
+		_error $prefix "Merci de vérifier l'archive de la source."
+		exit 20
+	fi
+	source_postdecompress
+	if [[ $? != 0 ]]; then
+		_error $prefix "Erreur sur la post décompression."
+		exit 3
+	fi
+	cd $build_dir/
+	if [[ $? != 0 ]]; then
+		_error $prefix "Le dossier contentant les sources est inexistant."
+		exit 4
+	fi
+	#Verification de l'existance de la fonction do_prepare dans la recette.
+	if exist_function "do_prepare" ; then
+		do_prepare
+		if [[ $? != 0 ]]; then
+			_error $prefix "Erreur sur la préparation de la recette. Merci de vérifier la fonction do_prepare."
+			exit 5
+		fi
+	fi
+	do_build
+	if [[ $? != 0 ]]; then
+		_error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
+		exit 6
+	fi
+	#Clean build workspace
+	clean_build
+}
+
+check_build_file() {
+	_information $prefix "Verification du fichier build"
+	exist_function "do_build"
+	if [ $? != 0 ]; then
+		_error $prefix "Le fonction do_build doit être présente"
+		exit 13
+	fi
+
+}
+.0
+
+exist_function() {
+	declare -f "$1" > /dev/null
+}
+
+help() {
+	echo -e "Aide pour ylxbuild :"
+	echo -e "Nothing to do !"
+}
+
+prefix="YLXBUILD"
+
+basedir=$PWD/$1
+buildfile=$1/build
+option=$2
+
+source yamutils
+source $buildfile
+
+SRCNAME=""
+ARCH=$(uname -m)
+PKG_DB="/var/db"
+TIMESTAMP=$(date +%s)
+user_dir=$(echo $HOME)
+YLX_WORK="/tmp/ylx/work"
+YLX_WORK_SOURCES="/tmp/ylx/work/src"
+
+case $2 in
+	"--build" | "-b")
+		pkg_build
+		;;
+	*)
+		build_init
+		pkg_build 2>&1|tee ${PKG_LOG}/$NAME.log || exit 1;;
+esac
+
