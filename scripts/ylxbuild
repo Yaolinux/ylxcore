@@ -32,7 +32,7 @@ get_filename() {
 
 source_decompress() {
 	_information $prefix "Décompression des sources"
-	cd $build_arbo/$NAME/sources
+	cd $YLX_SOURCES
 	for tarball in ${SRCNAME[@]};
 	do
 		LOCAL_FILENAME=$(get_filename $tarball)
@@ -60,18 +60,17 @@ source_postdecompress() {
 build_check() {
 	_information $prefix "Vérification du fichier build"
 	if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
-	if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 101; fi
+	if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 100; fi
 	if [ -z $RELEASE ]; then RELEASE=1; fi
-	if [ -z $DEPENDS ]; then _information $prefix "Paquet sans dépendances"; fi
-	if [ -n $RUNTIMES ]; then _warning $prefix "Paquet avec des runtimes définies"; fi
+	if [ $(type -t do_build) != "function" ]; then _error $prefix "No build function"; exit 100; fi
 }
 
 build_init() {
 	
-		if [ ! -d $YLX_WORK_SOURCES ]
-		then
-			mkdir -pv $YLX_WORK_SOURCES
-		fi
+	if [ ! -d $YLX_WORK_SOURCES ]
+	then
+		mkdir -pv $YLX_WORK_SOURCES
+	fi
 	
 	if [ -z $MAKECORE ]; then
 		NBCORE=$(nproc)
@@ -84,7 +83,7 @@ build_init() {
 clean_build() {
 	if [ -d $YLX_WORK_SOURCES ]
 		then
-			rm -rf $YLX_WORK_SOURCES
+			rm -rf $YLX_WORK
 		fi
 }
 
@@ -159,6 +158,7 @@ TIMESTAMP=$(date +%s)
 user_dir=$(echo $HOME)
 YLX_WORK="/tmp/ylx/work"
 YLX_WORK_SOURCES="/tmp/ylx/work/src"
+YLX_SOURCES="$LFS/sources"
 
 case $2 in
 	"--build" | "-b")
