@@ -20,6 +20,25 @@
 #
 #
 
+
+_information() {
+	green='\e[0;32m'
+	normal='\e[0m'
+	echo -e "${green}==> $@ ${normal}"
+}
+
+_warning() {
+	yellow='\e[0;33m'
+	normal='\e[0m'
+	echo -e "${yellow}==> $@ ${normal}"
+}
+
+_error() {
+	red='\e[0;31m'
+	normal='\e[0m'
+	echo -e "${red}==> $@ ${normal}"
+}
+
 get_filename() {
 	local FILE=$(echo $1 | sed 's|^.*://.*/||g')
 
@@ -59,9 +78,9 @@ source_postdecompress() {
 
 build_check() {
 	_information $prefix "Vérification du fichier build"
-	if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
-	if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 100; fi
-	if [ -z $RELEASE ]; then RELEASE=1; fi
+	#if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
+	#if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 100; fi
+	#if [ -z $RELEASE ]; then RELEASE=1; fi
 	if [ $(type -t do_build) != "function" ]; then _error $prefix "No build function"; exit 100; fi
 }
 
@@ -131,7 +150,6 @@ check_build_file() {
 	fi
 
 }
-.0
 
 exist_function() {
 	declare -f "$1" > /dev/null
@@ -148,7 +166,6 @@ basedir=$PWD/$1
 buildfile=$1/build
 option=$2
 
-source yamutils
 source $buildfile
 
 SRCNAME=""
