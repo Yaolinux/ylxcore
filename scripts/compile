@@ -2,6 +2,7 @@
 
 URL_REPO="http://repo.labo-linux.fr/sources"
 DIR_REPO="$LFS/sources"
+LOG_DIR="../log"
 CHOICE=$1
 
 case $CHOICE in
@@ -17,6 +18,30 @@ case $CHOICE in
         do
             wget --progress=bar:force -nv "$URL_REPO/$file" -P "$DIR_REPO"
         done < wlist
+        ;;
+    "chroot")
+        echo "Compile chroot"
+        PASS="chroot"
+        DIR_PASS="../$PASS"
+        if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
+        then
+            echo "The chroot directory or the file .order is/are missing."
+            exit 10
+        fi
+
+        while read PKG
+        do
+            echo $PKG
+            if [ ! -d $DIR_PASS/$PKG ]
+            then
+                echo -e "===> The package $PKG does not exist"
+                exit 15
+            fi
+            
+            ./ylxbuild $DIR_PASS/$PKG || exit 100
+
+        done < ../$PASS/.order
+
         ;;
     *)
         echo "Nothing to do !"
