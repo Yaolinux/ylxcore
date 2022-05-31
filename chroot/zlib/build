@@ -1,0 +1,11 @@
+version=1.2.11
+source=(http://www.zlib.net/zlib-$version.tar.xz)
+
+do_build() {
+cd zlib-$version
+
+./configure --prefix=/tools
+
+make
+make install
+}

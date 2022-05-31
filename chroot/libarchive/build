@@ -1,0 +1,11 @@
+version=3.5.2
+source=(https://github.com/libarchive/libarchive/releases/download/$version/libarchive-$version.tar.xz)
+
+do_build() {
+cd libarchive-$version
+
+./configure --prefix=/tools
+
+make
+make install
+}

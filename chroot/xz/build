@@ -1,0 +1,11 @@
+version=5.2.5
+source=(http://tukaani.org/xz/xz-$version.tar.xz)
+
+do_build() {
+cd xz-$version
+
+./configure --prefix=/tools
+
+make
+make install
+}

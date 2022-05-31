@@ -1,0 +1,11 @@
+version=3.7
+source=(http://ftp.gnu.org/gnu/grep/grep-$version.tar.xz)
+
+do_build() {
+cd grep-$version
+
+./configure --prefix=/tools
+
+make
+make install
+}

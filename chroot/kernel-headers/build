@@ -1,0 +1,12 @@
+version=5.10.60
+source=(https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-$version.tar.xz)
+
+do_build() {
+cd  linux-$version
+
+make mrproper
+make headers_check
+make INSTALL_HDR_PATH=dest headers_install
+
+cp -rv dest/include/* /tools/include
+}

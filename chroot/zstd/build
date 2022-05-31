@@ -1,0 +1,9 @@
+version=1.5.0
+source=(https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-$version.tar.gz)
+
+do_build() {
+cd zstd-$version
+
+make
+make prefix=/tools install
+}
