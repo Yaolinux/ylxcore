@@ -47,6 +47,7 @@ export_and_mount() {
 	export LFS="$MOUNT_POINT"
 	mkdir -pv $LFS
 	mount $MAIN_PART $LFS
+	ln -svf /bin/bash /bin/sh
 }
 
 create_directories() {
