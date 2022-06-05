@@ -12,7 +12,7 @@ cd build
       --host=$LFS_TARGET                 \
       --build=$(../scripts/config.guess) \
       --enable-kernel=3.2                \
-      --with-headers=/tools/include
+      --with-headers=$LFS/usr/include
 
 make
 make install

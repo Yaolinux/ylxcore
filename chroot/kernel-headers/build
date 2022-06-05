@@ -5,8 +5,10 @@ do_build() {
 cd  linux-$version
 
 make mrproper
-make headers_check
-make INSTALL_HDR_PATH=dest headers_install
 
-cp -rv dest/include/* /tools/include
+make headers
+find usr/include -name '.*' -delete
+rm usr/include/Makefile
+cp -rv usr/include $LFS/usr
+
 }
