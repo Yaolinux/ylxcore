@@ -37,8 +37,8 @@ case $CHOICE in
                 echo -e "===> The package $PKG does not exist"
                 exit 15
             fi
-            
-            ./ylxbuild $DIR_PASS/$PKG || exit 100
+
+                ./ylxbuild $DIR_PASS/$PKG
 
         done < ../$PASS/.order
 
