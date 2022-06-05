@@ -190,5 +190,5 @@ case $2 in
                 ;;
         *)
                 build_init
-                pkg_build 2>&1|tee ${PKG_LOG}/$NAME.log || exit 1;;
+                pkg_build
 esac
