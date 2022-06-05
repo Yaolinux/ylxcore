@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#  Copyright (c) 2021 - Yaolinux Teams
+#  Copyright (c) 2022 - Yaolinux Teams
 #
 # This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,142 +22,149 @@
 
 
 _information() {
-	green='\e[0;32m'
-	normal='\e[0m'
-	echo -e "${green}==> $@ ${normal}"
+        green='\e[0;32m'
+        normal='\e[0m'
+        echo -e "${green}==> $@ ${normal}"
 }
 
 _warning() {
-	yellow='\e[0;33m'
-	normal='\e[0m'
-	echo -e "${yellow}==> $@ ${normal}"
+        yellow='\e[0;33m'
+        normal='\e[0m'
+        echo -e "${yellow}==> $@ ${normal}"
 }
 
 _error() {
-	red='\e[0;31m'
-	normal='\e[0m'
-	echo -e "${red}==> $@ ${normal}"
+        red='\e[0;31m'
+        normal='\e[0m'
+        echo -e "${red}==> $@ ${normal}"
 }
 
 get_filename() {
-	local FILE=$(echo $1 | sed 's|^.*://.*/||g')
+        local FILE=$(echo $1 | sed 's|^.*://.*/||g')
 
-	if [ "$FILE" != "$1" ]; then
-		FILE="$PKGMK_SOURCE_DIR/$FILE"
-	fi
 
-	echo $FILE
+#       if [ "$FILE" != "$1" ]; then
+#               FILE="$YLX_SOURCES/$FILE"
+#
+#       fi
+
+        EXFILE=$FILE
 }
 
 source_decompress() {
-	_information $prefix "Décompression des sources"
-	cd $YLX_SOURCES
-	for tarball in ${SRCNAME[@]};
-	do
-		LOCAL_FILENAME=$(get_filename $tarball)
-		case $LOCAL_FILENAME in
-			*.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
-				tar xf $tarball -C YLX_WORK_SOURCES
-				;;
-			*)
-				cp -rf $build_dir/$tarball YLX_WORK_SOURCES
-				;;
+        _information $prefix "Décompression des sources"
+        cd $YLX_SOURCES
+        for tarball in "${source[@]}";
+        do
+                echo $tarball
+                get_filename $source
+                echo $EXFILE
+                case $EXFILE in
+                        *.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
+                                echo "$tarball - $EXFILE"
+                                tar xf $EXFILE -C $YLX_WORK_SOURCES
+                                ;;
+                        *)
+                                #cp -rf $build_dir/$tarball $YLX_WORK_SOURCES
+                                echo "no"
+                                ;;
 
-		esac
-	done
+                esac
+        done
 }
 
 source_postdecompress() {
-	_information $prefix "Vérification des sources"
-	cd $build_arbo/$NAME/sources
-	for tarball in $TAR;
-	do
-		folder_pkg=$(tar tf $tarball | head -1)
-	done
+        _information $prefix "Vérification des sources"
+        cd $YLX_WORK_SOURCES
+        for tarball in $TAR;
+        do
+                folder_pkg=$(tar tf $tarball | head -1)
+        done
 }
 
 build_check() {
-	_information $prefix "Vérification du fichier build"
-	#if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
-	#if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 100; fi
-	#if [ -z $RELEASE ]; then RELEASE=1; fi
-	if [ $(type -t do_build) != "function" ]; then _error $prefix "No build function"; exit 100; fi
+        _information $prefix "Vérification du fichier build"
+        #if [ -z $NAME ]; then _error $prefix "Variable NAME vide"; exit 100; fi
+        #if [ -z $VERSION ]; then _error $prefix "Variable VERSION vide"; exit 100; fi
+        #if [ -z $RELEASE ]; then RELEASE=1; fi
+        if [ $(type -t do_build) != "function" ]; then _error $prefix "No build function"; exit 100; fi
 }
 
 build_init() {
-	
-	if [ ! -d $YLX_WORK_SOURCES ]
-	then
-		mkdir -pv $YLX_WORK_SOURCES
-	fi
-	
-	if [ -z $MAKECORE ]; then
-		NBCORE=$(nproc)
-		export MAKEFLAGS="-j ${NBCORE}"
-	else
-		export MAKEFLAGS="-j ${MAKECORE}"
-	fi
+
+        if [ ! -d $YLX_WORK_SOURCES ]
+        then
+                mkdir -pv $YLX_WORK_SOURCES
+        fi
+
+        if [ -z $MAKECORE ]; then
+                NBCORE=$(nproc)
+                export MAKEFLAGS="-j ${NBCORE}"
+        else
+                export MAKEFLAGS="-j ${MAKECORE}"
+        fi
 }
 
 clean_build() {
-	if [ -d $YLX_WORK_SOURCES ]
-		then
-			rm -rf $YLX_WORK
-		fi
+        if [ -d $YLX_WORK_SOURCES ]
+                then
+                        rm -rf $YLX_WORK
+                fi
 }
 
 pkg_build() {
-	build_init
-	build_check
-	source_decompress
-	if [[ $? != 0 ]]; then
-		_error $prefix "Merci de vérifier l'archive de la source."
-		exit 20
-	fi
-	source_postdecompress
-	if [[ $? != 0 ]]; then
-		_error $prefix "Erreur sur la post décompression."
-		exit 3
-	fi
-	cd $build_dir/
-	if [[ $? != 0 ]]; then
-		_error $prefix "Le dossier contentant les sources est inexistant."
-		exit 4
-	fi
-	#Verification de l'existance de la fonction do_prepare dans la recette.
-	if exist_function "do_prepare" ; then
-		do_prepare
-		if [[ $? != 0 ]]; then
-			_error $prefix "Erreur sur la préparation de la recette. Merci de vérifier la fonction do_prepare."
-			exit 5
-		fi
-	fi
-	do_build
-	if [[ $? != 0 ]]; then
-		_error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
-		exit 6
-	fi
-	#Clean build workspace
-	clean_build
+        build_init
+        build_check
+        echo $source
+        source_decompress
+        if [[ $? != 0 ]]; then
+                _error $prefix "Merci de vérifier l'archive de la source."
+                exit 20
+        fi
+        source_postdecompress
+        if [[ $? != 0 ]]; then
+                _error $prefix "Erreur sur la post décompression."
+                exit 3
+        fi
+        cd $YLX_WORK_SOURCES/
+        if [[ $? != 0 ]]; then
+                _error $prefix "Le dossier contentant les sources est inexistant."
+                exit 4
+        fi
+        #Verification de l'existance de la fonction do_prepare dans la recette.
+        if exist_function "do_prepare" ; then
+                do_prepare
+                if [[ $? != 0 ]]; then
+                        _error $prefix "Erreur sur la préparation de la recette. Merci de vérifier la fonction do_prepare."
+                        exit 5
+                fi
+        fi
+        do_build
+        if [[ $? != 0 ]]; then
+                _error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
+                exit 6
+        fi
+        #Clean build workspace
+        clean_build
 }
 
 check_build_file() {
-	_information $prefix "Verification du fichier build"
-	exist_function "do_build"
-	if [ $? != 0 ]; then
-		_error $prefix "Le fonction do_build doit être présente"
-		exit 13
-	fi
+        _information $prefix "Verification du fichier build"
+        exist_function "do_build"
+        if [ $? != 0 ]; then
+                _error $prefix "Le fonction do_build doit être présente"
+                exit 13
+        fi
 
 }
 
 exist_function() {
-	declare -f "$1" > /dev/null
+        declare -f "$1" > /dev/null
 }
 
 help() {
-	echo -e "Aide pour ylxbuild :"
-	echo -e "Nothing to do !"
+        echo -e "Aide pour ylxbuild :"
+        echo -e "Nothing to do !"
 }
 
 prefix="YLXBUILD"
@@ -178,11 +185,10 @@ YLX_WORK_SOURCES="/tmp/ylx/work/src"
 YLX_SOURCES="$LFS/sources"
 
 case $2 in
-	"--build" | "-b")
-		pkg_build
-		;;
-	*)
-		build_init
-		pkg_build 2>&1|tee ${PKG_LOG}/$NAME.log || exit 1;;
+        "--build" | "-b")
+                pkg_build
+                ;;
+        *)
+                build_init
+                pkg_build 2>&1|tee ${PKG_LOG}/$NAME.log || exit 1;;
 esac
-
