@@ -57,7 +57,7 @@ source_decompress() {
         for tarball in "${source[@]}";
         do
                 echo $tarball
-                get_filename $source
+                get_filename $tarball
                 echo $EXFILE
                 case $EXFILE in
                         *.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
@@ -139,12 +139,15 @@ pkg_build() {
                         exit 5
                 fi
         fi
-        do_build
-        if [[ $? != 0 ]]; then
+        if ! do_build
+	then
                 _error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
                 exit 6
         fi
-        #Clean build workspace
+
+	echo $?
+
+	#Clean build workspace
         clean_build
 }
 
@@ -183,6 +186,7 @@ user_dir=$(echo $HOME)
 YLX_WORK="/tmp/ylx/work"
 YLX_WORK_SOURCES="/tmp/ylx/work/src"
 YLX_SOURCES="$LFS/sources"
+LOG_DIR="../log"
 
 case $2 in
         "--build" | "-b")
@@ -190,5 +194,6 @@ case $2 in
                 ;;
         *)
                 build_init
-                pkg_build
+                pkg_build #2>&1|tee ${LOG_DIR}/$PKG.log || exit 1
+		;;
 esac

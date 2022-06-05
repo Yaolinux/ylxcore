@@ -38,16 +38,39 @@ case $CHOICE in
         while read PKG
         do
             echo $PKG
+
+		NEXT="true"
+
             if [ ! -d $DIR_PASS/$PKG ]
             then
                 echo -e "===> The package $PKG does not exist"
                 exit 15
             fi
 
-                ./ylxbuild $DIR_PASS/$PKG
+		if [ -f  ${LOG_DIR}/$PKG.log ]
+		then
+			if grep -q "=> @COMPIL_DONE@" ${LOG_DIR}/$PKG.log
+			then
+				NEXT="false"
+			else
+				NEXT="true"
+			fi
+
+		fi
+
+		if [ $NEXT == "true" ]
+		then
+
+			if ! ./ylxbuild $DIR_PASS/$PKG
+			then
+				echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
+			else
+				break
+			fi
+
+		fi
 
         done < ../$PASS/.order
-
         ;;
     *)
         echo "Nothing to do !"
