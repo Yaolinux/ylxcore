@@ -37,7 +37,6 @@ case $CHOICE in
 
         while read PKG
         do
-            echo $PKG
 
 		NEXT="true"
 
@@ -61,7 +60,7 @@ case $CHOICE in
 		if [ $NEXT == "true" ]
 		then
 
-			if ! ./ylxbuild $DIR_PASS/$PKG
+			if ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG"
 			then
 				echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
 			else
