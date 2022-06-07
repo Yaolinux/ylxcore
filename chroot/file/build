@@ -4,8 +4,17 @@ source=(ftp://ftp.astron.com/pub/file/file-$version.tar.gz)
 do_build() {
 cd file-$version
 
-./configure --prefix=/tools
+mkdir build
+pushd build
+  ../configure --disable-bzlib      \
+               --disable-libseccomp \
+               --disable-xzlib      \
+               --disable-zlib
+  make
+popd
 
-make
-make install
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
+
+make FILE_COMPILE=$(pwd)/build/src/file
+make DESTDIR=$LFS install
 }

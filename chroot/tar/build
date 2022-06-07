@@ -4,8 +4,10 @@ source=(http://ftp.gnu.org/gnu/tar/tar-$version.tar.xz)
 do_build() {
 cd tar-$version
 
-./configure --prefix=/tools
+./configure --prefix=/usr                     \
+            --host=$LFS_TGT                   \
+            --build=$(build-aux/config.guess)
 
 make
-make install
+make DESTDIR=$LFS install
 }

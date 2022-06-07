@@ -4,8 +4,11 @@ source=(http://ftp.gnu.org/gnu/grep/grep-$version.tar.xz)
 do_build() {
 cd grep-$version
 
-./configure --prefix=/tools
+./configure --prefix=/usr   \
+            --host=$LFS_TGT
 
 make
-make install
+
+make DESTDIR=$LFS install
+
 }

@@ -4,8 +4,8 @@ source=(http://ftp.gnu.org/gnu/sed/sed-$version.tar.xz)
 do_build() {
 cd sed-$version
 
-./configure --prefix=/tools
-
+./configure --prefix=/usr   \
+            --host=$LFS_TGT
 make
-make install
+make DESTDIR=$LFS install
 }
