@@ -11,6 +11,11 @@ then
 	exit 1
 fi
 
+if [ ! -d $LOG_DIR ]
+then
+	mkdir -pv $LOG_DIR
+fi
+
 case $CHOICE in
     "-d"|"--download")
         echo "Download source from $URL_REPO"
