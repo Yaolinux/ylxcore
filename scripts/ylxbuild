@@ -20,6 +20,7 @@
 #
 #
 
+set -e
 
 _information() {
         green='\e[0;32m'
@@ -215,4 +216,4 @@ YLX_SOURCES="$LFS/sources"
 LOG_DIR="../log"
 
 build_init
-pkg_build 2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
+pkg_build #2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
