@@ -56,16 +56,14 @@ source_decompress() {
         cd $YLX_SOURCES
         for tarball in "${source[@]}";
         do
-                echo $tarball
                 get_filename $tarball
-                echo $EXFILE
                 case $EXFILE in
                         *.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
                                 echo "$tarball - $EXFILE"
                                 tar xf $EXFILE -C $YLX_WORK_SOURCES
                                 ;;
                         *)
-                                #cp -rf $build_dir/$tarball $YLX_WORK_SOURCES
+                                cp -rf $tarball $YLX_WORK_SOURCES
                                 echo "no"
                                 ;;
 
@@ -185,6 +183,11 @@ while [[ $# -gt 0 ]]; do
 	shift
 	shift
 	;;
+    -cp|--create-package)
+        CREATE_PACKAGE="yes"
+        shift
+        shift
+        ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1

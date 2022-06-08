@@ -71,6 +71,52 @@ case $CHOICE in
 
         done < ../$PASS/.order
         ;;
+    "base")
+	    echo "Compile base"
+        PASS="base"
+        DIR_PASS="../$PASS"
+        if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
+        then
+            echo "The base directory or the file .order is/are missing."
+            exit 10
+        fi
+
+        while read PKG
+        do
+
+		NEXT="true"
+
+            if [ ! -d $DIR_PASS/$PKG ]
+            then
+                echo -e "===> The package $PKG does not exist"
+                exit 15
+            fi
+
+		if [ -f  ${LOG_DIR}/$PKG.log ]
+		then
+			if grep -q "=> @COMPIL_DONE@" ${LOG_DIR}/$PKG.log
+			then
+				NEXT="false"
+			else
+				NEXT="true"
+			fi
+
+		fi
+
+		if [ $NEXT == "true" ]
+		then
+
+			if ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG"
+			then
+				echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
+			else
+				break
+			fi
+
+		fi
+
+        done < ../$PASS/.order
+        ;;
     *)
         echo "Nothing to do !"
         ;;
