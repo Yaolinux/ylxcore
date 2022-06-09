@@ -64,7 +64,7 @@ source_decompress() {
                                 tar xf $EXFILE -C $YLX_WORK_SOURCES
                                 ;;
                         *)
-                                cp -rf $tarball $YLX_WORK_SOURCES
+                                cp -rf $EXFILE $YLX_WORK_SOURCES
                                 echo "no"
                                 ;;
 
@@ -216,4 +216,4 @@ YLX_SOURCES="$LFS/sources"
 LOG_DIR="../log"
 
 build_init
-pkg_build 2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
+pkg_build #2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
