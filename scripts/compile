@@ -64,6 +64,7 @@ case $CHOICE in
 
 		if [ $NEXT == "true" ]
 		then
+			echo "==> $PKG go to compile"
 
 			if ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG"
 			then
