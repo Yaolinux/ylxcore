@@ -51,18 +51,29 @@ export_and_mount() {
 }
 
 create_directories() {
-	mkdir -vp $LFS/{sources,tools}
-	ln -svf $LFS/tools /
-	ln -svf $LFS/sources /
+	mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
+
+	for i in bin lib sbin; do
+	  ln -sv usr/$i $LFS/$i
+	done
+
+	case $(uname -m) in
+	  x86_64) mkdir -pv $LFS/lib64 ;;
+	esac
+
+	mkdir -pv $LFS/tools
 }
 
 create_lfs_user() {
 	groupadd lfs
 	useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 	echo 'lfs:lfs' | chpasswd
-	chown -v lfs $LFS/{tools,sources}
-	chmod -v a+wt $LFS/sources
-	chown -v lfs $LFS
+	chown -v lfs $LFS/{usr{,/*},lib,var,etc,bin,sbin,tools}
+	case $(uname -m) in
+	  x86_64) chown -v lfs $LFS/lib64 ;;
+	esac
+
+	chown -v lfs $LFS/sources
 
 }
 
