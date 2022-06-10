@@ -1,0 +1,72 @@
+name=glibc
+version=2.35
+source=(https://ftp.gnu.org/gnu/glibc/glibc-2.35.tar.xz
+	https://www.linuxfromscratch.org/patches/lfs/11.1/glibc-2.35-fhs-1.patch)
+
+do_build() {
+	cd glibc-$version
+
+	patch -Np1 -i ../glibc-2.35-fhs-1.patch
+
+
+	mkdir -v build
+	cd       build
+
+	echo "rootsbindir=/usr/sbin" > configparms
+
+	../configure --prefix=/usr                            \
+             --disable-werror                         \
+             --enable-kernel=3.2                      \
+             --enable-stack-protector=strong          \
+             --with-headers=/usr/include              \
+             libc_cv_slibdir=/usr/lib
+
+	make
+
+	make check
+	touch /etc/ld.so.conf
+	sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
+	make install
+
+	sed '/RTLDLIST=/s@/usr@@g' -i /usr/bin/ldd
+	cp -v ../nscd/nscd.conf /etc/nscd.conf
+	mkdir -pv /var/cache/nscd
+
+	install -v -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
+	install -v -Dm644 ../nscd/nscd.service /usr/lib/systemd/system/nscd.service
+
+	mkdir -pv /usr/lib/locale
+	localedef -i fr_FR -f UTF-8 fr_FR.UTF-8
+	localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
+	localedef -i ja_JP -f SHIFT_JIS ja_JP.SJIS 2> /dev/null || true
+
+cat > /etc/nsswitch.conf << "EOF"
+# Begin /etc/nsswitch.conf
+
+passwd: files
+group: files
+shadow: files
+
+hosts: files dns
+networks: files
+
+protocols: files
+services: files
+ethers: files
+rpc: files
+
+# End /etc/nsswitch.conf
+EOF
+
+cat > /etc/ld.so.conf << "EOF"
+# Début de /etc/ld.so.conf
+/usr/local/lib
+/opt/lib
+
+# Ajout d'un répertoire include
+include /etc/ld.so.conf.d/*.conf
+
+EOF
+
+mkdir $PKG/etc/ld.so.conf.d
+}

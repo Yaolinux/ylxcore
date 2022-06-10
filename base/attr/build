@@ -1,0 +1,16 @@
+name=attr
+version=2.5.1
+source=(https://download.savannah.gnu.org/releases/attr/attr-2.5.1.tar.gz)
+
+do_build() {
+	cd attr-$version
+
+	./configure --prefix=/usr     \
+            --disable-static  \
+            --sysconfdir=/etc \
+            --docdir=/usr/share/doc/attr-2.5.1
+
+	make
+	make install
+
+}

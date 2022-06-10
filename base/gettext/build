@@ -1,0 +1,15 @@
+name=gettext
+version=0.21
+source=(https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz)
+
+do_build() {
+	cd gettext-$version
+
+	./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/gettext-0.21
+
+	make
+	make install
+	chmod -v 0755 /usr/lib/preloadable_libintl.so
+}

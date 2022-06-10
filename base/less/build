@@ -1,0 +1,13 @@
+name=less
+version=590
+source=(https://www.greenwoodsoftware.com/less/less-590.tar.gz)
+
+do_build() {
+	cd less-$version
+
+	./configure --prefix=/usr --sysconfdir=/etc
+
+	make
+	make install
+
+}

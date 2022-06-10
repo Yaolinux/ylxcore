@@ -1,0 +1,26 @@
+name=openrc
+version=0.45
+source=(https://github.com/OpenRC/openrc/archive/refs/tags/0.45.tar.gz)
+
+_makeargs=(BRANDING='Yaolinux')
+_makeargs+=(MKPAM=pam)
+_makeargs+=(MKSELINUX=no)
+_makeargs+=(MKTERMCAP=ncurses)
+_makeargs+=(PKG_PREFIX="")
+_makeargs+=(LIBDIR=/usr/lib)
+_makeargs+=(SHLIBDIR=/usr/lib)
+_makeargs+=(LIBEXECDIR=/usr/libexec/rc)
+_makeargs+=(BINDIR=/usr/bin)
+_makeargs+=(SBINDIR=/usr/bin)
+_makeargs+=(SYSCONFDIR=/etc/openrc)
+
+do_build() {
+	cd openrc-$version
+
+	sed -ie 's!/sbin/rc!/usr/bin/rc!g' support/sysvinit/inittab
+
+	make "${_makeargs[@]}"
+	make "${_makeargs[@]}" install
+
+	install -m 644 support/sysvinit/inittab /etc/openrc/inittab
+}

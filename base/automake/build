@@ -1,0 +1,13 @@
+name=automake
+version=1.16.5
+source=(https://ftp.gnu.org/gnu/automake/automake-1.16.5.tar.xz)
+
+do_build() {
+	cd automake-$version
+
+	./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.5
+
+	make
+	make install
+
+}

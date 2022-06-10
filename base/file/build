@@ -1,0 +1,13 @@
+name=file
+version=5.41
+source=(https://astron.com/pub/file/file-5.41.tar.gz)
+
+do_build() {
+	cd file-$version
+
+	./configure --prefix=/usr
+
+	make
+	make install
+
+}

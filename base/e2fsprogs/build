@@ -1,0 +1,26 @@
+name=e2fsprogs
+version=1.46.5
+source=(https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.46.5/e2fsprogs-1.46.5.tar.gz)
+
+do_build() {
+	cd e2fsprogs-$version
+
+	mkdir -v build
+	cd       build
+
+	../configure --prefix=/usr           \
+             --sysconfdir=/etc       \
+             --enable-elf-shlibs     \
+             --disable-libblkid      \
+             --disable-libuuid       \
+             --disable-uuidd         \
+             --disable-fsck
+
+	make
+	make install
+
+	rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+	gunzip -v /usr/share/info/libext2fs.info.gz
+	install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+
+}
