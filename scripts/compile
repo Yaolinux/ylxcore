@@ -5,11 +5,11 @@ DIR_REPO="$LFS/sources"
 LOG_DIR="../log"
 CHOICE=$1
 
-if [ $(whoami) != "lfs" ]
-then
-	echo "You must be a LFS user"
-	exit 1
-fi
+#if [ $(whoami) != "lfs" ]
+#then
+#	echo "You must be a LFS user"
+#	exit 1
+#fi
 
 if [ ! -d $LOG_DIR ]
 then
