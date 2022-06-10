@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ ! -z $1 ]
+then
+PKGNAME=$1
+PKGVERSION=$2
+
+	if [ ! -d $1 ]
+	then
+
+		if mkdir $1; then
+cat > $1/build <<EOF
+name=$PKGNAME
+version=$PKGVERSION
+source=()
+
+do_build() {
+	cd $PKGNAME-\$version
+
+	make
+	make install
+
+}
+EOF
+
+		nano $1/build
+
+		fi
+	else
+		echo "Package aleady exist"
+		nano $1/build
+	fi
+fi
