@@ -30,9 +30,9 @@ case $CHOICE in
             wget --progress=bar:force -nv "$URL_REPO/$file" -P "$DIR_REPO"
         done < wlist
         ;;
-    "chroot")
-        echo "Compile chroot"
-        PASS="chroot"
+    "tools")
+        echo "Compile tools"
+        PASS="tools"
         DIR_PASS="../$PASS"
         if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
         then
@@ -77,9 +77,9 @@ case $CHOICE in
 
         done < ../$PASS/.order
         ;;
-    "base")
-	    echo "Compile base"
-        PASS="base"
+    "chroot")
+	echo "Compile chroot"
+        PASS="chroot"
         DIR_PASS="../$PASS"
         if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
         then
