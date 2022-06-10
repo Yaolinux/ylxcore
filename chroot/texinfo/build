@@ -1,0 +1,14 @@
+version=6.8
+source=(https://ftp.gnu.org/gnu/texinfo/texinfo-$version.tar.xz)
+
+do_build() {
+cd texinfo-$version
+
+sed -e 's/__attribute_nonnull__/__nonnull/' \
+    -i gnulib/lib/malloc/dynarray-skeleton.c
+
+./configure --prefix=/usr
+
+make
+make install
+}
