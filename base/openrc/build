@@ -19,8 +19,8 @@ do_build() {
 
 	sed -ie 's!/sbin/rc!/usr/bin/rc!g' support/sysvinit/inittab
 
-	make "${_makeargs[@]}"
-	make "${_makeargs[@]}" install
+	meson "${_makeargs[@]}"
+	meson "${_makeargs[@]}" install
 
 	install -m 644 support/sysvinit/inittab /etc/openrc/inittab
 }
