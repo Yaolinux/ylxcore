@@ -20,8 +20,6 @@
 #
 #
 
-set -e
-
 _information() {
         green='\e[0;32m'
         normal='\e[0m'
@@ -53,6 +51,9 @@ get_filename() {
 }
 
 source_decompress() {
+
+	local CMD
+
         _information $prefix "Décompression des sources"
         cd $YLX_SOURCES
         for tarball in "${source[@]}";
@@ -60,15 +61,21 @@ source_decompress() {
                 get_filename $tarball
                 case $EXFILE in
                         *.tar|*.tar.gz|*.tar.Z|*.tgz|*.tar.bz2|*.tbz2|*.tbz|*.tar.xz|*.txz|*.tar.lzma|*.tar.lz)
-                                echo "$tarball - $EXFILE"
-                                tar xf $EXFILE -C $YLX_WORK_SOURCES
+                                CMD="tar xf $EXFILE -C $YLX_WORK_SOURCES"
                                 ;;
                         *)
-                                cp -rf $EXFILE $YLX_WORK_SOURCES
-                                echo "no"
+                                CMD="cp -rf $EXFILE $YLX_WORK_SOURCES"
                                 ;;
 
                 esac
+
+		echo $CMD
+
+		if ! $CMD
+		then
+			_error $prefix "Merci de vérifier l'archive de la source."
+			exit 20
+		fi
         done
 }
 
@@ -116,10 +123,6 @@ pkg_build() {
         build_check
         echo $source
         source_decompress
-        if [[ $? != 0 ]]; then
-                _error $prefix "Merci de vérifier l'archive de la source."
-                exit 20
-        fi
         source_postdecompress
         if [[ $? != 0 ]]; then
                 _error $prefix "Erreur sur la post décompression."
@@ -138,7 +141,7 @@ pkg_build() {
                         exit 5
                 fi
         fi
-        if ! do_build
+        if ! (set -e -x ; do_build)
 	then
                 _error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
                 exit 6
