@@ -1,6 +1,6 @@
 name=dejagnu
 version=1.6.3
-source=()
+source=(https://ftp.gnu.org/gnu/dejagnu/dejagnu-1.6.3.tar.gz)
 
 do_build() {
 	cd dejagnu-$version

@@ -1,10 +1,9 @@
 name=tcl
 version=8.6.12
-source=(https://downloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz
-	https://downloads.sourceforge.net/tcl/tcl8.6.12-html.tar.gz)
+source=(https://downloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz)
 
 do_build() {
-	cd tcl-$version
+	cd tcl$version
 
 	SRCDIR=$(pwd)
 	cd unix
@@ -38,7 +37,4 @@ do_build() {
 	chmod -v u+w /usr/lib/libtcl8.6.so
 	make install-private-headers
 	ln -sfv tclsh8.6 /usr/bin/tclsh
-	mv /usr/share/man/man3/{Thread,Tcl_Thread}.3
-	mkdir -v -p /usr/share/doc/tcl-8.6.12
-	cp -v -r  ../html/* /usr/share/doc/tcl-8.6.12
 }

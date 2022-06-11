@@ -3,7 +3,7 @@ version=5.45.4
 source=(https://prdownloads.sourceforge.net/expect/expect5.45.4.tar.gz)
 
 do_build() {
-	cd expect-$version
+	cd expect$version
 
 	./configure --prefix=/usr           \
             --with-tcl=/usr/lib     \
