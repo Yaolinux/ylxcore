@@ -113,4 +113,5 @@ coreutils-9.0-chmod_fix-1.patch
 glibc-2.35-fhs-1.patch
 kbd-2.4.0-backspace-1.patch
 perl-5.34.0-upstream_fixes-1.patch
+0.45.tar.gz
 
