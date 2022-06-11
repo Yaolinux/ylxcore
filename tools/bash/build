@@ -12,5 +12,5 @@ cd bash-$version
 make
 make DESTDIR=$LFS install
 
-ln -vsf bash /tools/bin/sh
+ln -sv bash $LFS/bin/sh
 }
