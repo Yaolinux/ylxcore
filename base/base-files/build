@@ -83,9 +83,17 @@ cat > /etc/fstab << "EOF"
 # file system  mount-point  type     options             dump  fsck
 #                                                              order
 
-/dev/sdb1     /            <fff>    defaults            1     1
-/dev/sdb2     swap         swap     pri=1               0     0
+/dev/sdX     /            ext4    defaults            1     1
+/dev/sdX     swap         swap     pri=1               0     0
 
 # End /etc/fstab
+EOF
+
+cat > /etc/profile << "EOF"
+# Début de /etc/profile
+
+export LANG=fr_FR.UTF8
+
+# Fin de /etc/profile
 EOF
 }
