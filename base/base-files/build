@@ -1,0 +1,91 @@
+name=base-files
+version=1.0
+source=()
+
+do_build() {
+
+cat > /etc/resolv.conf << "EOF"
+# Début de /etc/resolv.conf
+
+nameserver 80.67.169.12
+nameserver 80.67.169.40
+
+# Fin de /etc/resolv.conf
+EOF
+
+echo "yaolinux-dev" > /etc/hostname
+
+cat > /etc/hosts << "EOF"
+# Begin /etc/hosts
+
+127.0.0.1 localhost.localdomain localhost
+
+# End /etc/hosts
+EOF
+
+cat > /etc/inputrc << "EOF"
+# Début de /etc/inputrc
+# Modifié par Chris Lynn <roryo@roryo.dynup.net>
+
+# Permettre à l'invite de commande d'aller à la ligne
+set horizontal-scroll-mode Off
+
+# Activer l'entrée sur 8 bits
+set meta-flag On
+set input-meta On
+
+# Ne pas supprimer le 8ème bit
+set convert-meta Off
+
+# Conserver le 8ème bit à l'affichage
+set output-meta On
+
+# « none », « visible » ou « audible »
+set bell-style none
+
+# Toutes les indications qui suivent font correspondre la séquence
+# d'échappement contenue dans le 1er argument à la fonction
+# spécifique de readline
+"\eOd": backward-word
+"\eOc": forward-word
+
+# Pour la console linux
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+# pour xterm
+"\eOH": beginning-of-line
+"\eOF": end-of-line
+
+# pour Konsole
+"\e[H": beginning-of-line
+"\e[F": end-of-line
+
+# Fin de /etc/inputrc
+EOF
+
+cat > /etc/shells << "EOF"
+# Begin /etc/shells
+
+/bin/sh
+/bin/bash
+
+# Fin de /etc/shells
+EOF
+
+cat > /etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system  mount-point  type     options             dump  fsck
+#                                                              order
+
+/dev/sdb1     /            <fff>    defaults            1     1
+/dev/sdb2     swap         swap     pri=1               0     0
+
+# End /etc/fstab
+EOF
+}

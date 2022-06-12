@@ -64,6 +64,7 @@ patch
 tar
 texinfo
 vim
+eudev
 markupsafe
 jinja2
 dbus
@@ -73,3 +74,5 @@ util-linux
 e2fsprogs
 pam
 openrc
+base-files
+kernel-5169
