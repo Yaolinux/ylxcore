@@ -17,10 +17,25 @@ _makeargs+=(SYSCONFDIR=/etc/openrc)
 do_build() {
 	cd openrc-$version
 
-	sed -ie 's!/sbin/rc!/usr/bin/rc!g' support/sysvinit/inittab
+	mkdir -p ../build && cd ../build
 
-	meson "${_makeargs[@]}"
-	meson "${_makeargs[@]}" install
+	meson --prefix=/usr \
+	-Dbranding="\"Yaolinux\"" \
+        -Drootprefix=/usr \
+	-Dos=Linux \
+	-Dpam=true \
+	-Dpkgconfig=true \
+	-Dshell=/bin/bash \
+        -Dsplit-usr=true \
+        -Dsysvinit=true \
+	-Dtermcap=ncurses \
+        ../$name-$version
 
-	install -m 644 support/sysvinit/inittab /etc/openrc/inittab
+	ninja 
+	DESTDIR=' ' ninja install
+
+	install -vdm755 /etc/openrc/
+	install -m 644 ../$name-$version/support/sysvinit/inittab /etc/openrc/inittab
+	cd ..
+	rm -r build/
 }
