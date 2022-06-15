@@ -74,6 +74,7 @@ procps
 util-linux
 e2fsprogs
 pam
+sysklogd
 openrc
 base-files
 kernel-5169

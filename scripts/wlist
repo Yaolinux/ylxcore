@@ -114,4 +114,5 @@ glibc-2.35-fhs-1.patch
 kbd-2.4.0-backspace-1.patch
 perl-5.34.0-upstream_fixes-1.patch
 0.45.tar.gz
-
+eudev-3.2.11.tar.gz
+config_64
