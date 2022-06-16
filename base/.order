@@ -66,8 +66,6 @@ tar
 texinfo
 vim
 eudev
-markupsafe
-jinja2
 dbus
 man-db
 procps
