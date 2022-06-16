@@ -6,17 +6,17 @@ source=(https://github.com/eudev-project/eudev/releases/download/v3.2.11/eudev-3
 do_build() {
 	cd eudev-$version
 
-	#./configure --prefix=/usr           \
-        #    --bindir=/usr/sbin      \
-        #    --sysconfdir=/etc       \
-        #    --enable-manpages       \
-        #    --disable-static
+	./configure --prefix=/usr           \
+            --bindir=/usr/sbin      \
+            --sysconfdir=/etc       \
+            --enable-manpages       \
+            --disable-static
 
-	#make
-	#make install
+	make
+	make install
 
 
-	cd ../udev-lfs-20171102/Makefile.lfs
+	cd ../udev-lfs-20171102
 	make install
 
 }
