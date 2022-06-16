@@ -17,6 +17,6 @@ do_build() {
 
 
 	cd ../udev-lfs-20171102
-	make install
+	make -f Makefile.lfs install
 
 }
