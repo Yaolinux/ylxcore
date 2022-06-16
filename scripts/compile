@@ -158,7 +158,8 @@ case $CHOICE in
                 if [ $NEXT == "true" ]
                 then
 
-                        if ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG"
+                        ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG" 2>&1|tee ${LOG_DIR}/$PKG.log || exit 1
+			if [ ${PIPESTATUS[0]} == 0 ]
                         then
                                 echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
                         else
