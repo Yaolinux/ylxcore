@@ -141,7 +141,9 @@ pkg_build() {
                         exit 5
                 fi
         fi
-        if ! (set -e -x ; do_build)
+        (set -e -x ; do_build)
+
+	if [ $? != 0 ]
 	then
                 _error $prefix "Erreur sur la compilation de la recette. Merci de vérifier la fonction do_build."
                 exit 6
@@ -219,5 +221,5 @@ YLX_SOURCES="$LFS/sources"
 LOG_DIR="../log"
 
 build_init
-pkg_build 2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
+pkg_build #2>&1|tee ${LOG_DIR}/$NAME.log || exit 1
 exit ${PIPESTATUS[0]}
