@@ -20,12 +20,11 @@ do_build() {
         ../$name-$version
 
 	ninja 
-	DESTDIR=' ' ninja install
+	DESTDIR='' ninja install
 
 	install -vdm755 /etc/openrc/
 	install -m 644 ../$name-$version/support/sysvinit/inittab /etc/openrc/inittab
 	cd ..
 	rm -r build/
 
-	ln -sv ../usr/sbin/openrc-init /bin/init
 }

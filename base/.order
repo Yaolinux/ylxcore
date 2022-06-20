@@ -1,3 +1,4 @@
+base-files
 man-pages
 iana-etc
 glibc
@@ -74,5 +75,6 @@ e2fsprogs
 pam
 sysklogd
 openrc
-base-files
 kernel-5169
+eudev-scripts
+dhcpcd
