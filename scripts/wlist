@@ -116,3 +116,6 @@ perl-5.34.0-upstream_fixes-1.patch
 0.45.tar.gz
 eudev-3.2.11.tar.gz
 config_64
+udev-gentoo-scripts-35.tar.gz
+dhcpcd-9.4.1.tar.xz
+blfs-bootscripts-20210826.tar.xz
