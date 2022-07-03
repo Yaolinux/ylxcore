@@ -1,0 +1,16 @@
+name=expat
+version=2.4.6
+source=(https://prdownloads.sourceforge.net/expat/expat-2.4.6.tar.xz)
+
+do_build() {
+	cd expat-$version
+	
+	./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/expat-2.4.6
+
+	make
+	make install
+
+	install -v -m644 doc/*.{html,css} /usr/share/doc/expat-2.4.6
+}

@@ -1,0 +1,9 @@
+name=eudev-scripts
+version=35
+source=(http://repo.labo-linux.fr/sources/udev-gentoo-scripts-35.tar.gz)
+
+do_build() {
+	cd udev-gentoo-scripts-$version
+
+	make install
+}

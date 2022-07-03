@@ -1,0 +1,15 @@
+name=texinfo
+version=6.8
+source=(https://ftp.gnu.org/gnu/texinfo/texinfo-6.8.tar.xz)
+
+do_build() {
+	cd texinfo-$version
+
+	./configure --prefix=/usr
+	sed -e 's/__attribute_nonnull__/__nonnull/' \
+	    -i gnulib/lib/malloc/dynarray-skeleton.c
+
+	make
+	make install
+
+}

@@ -1,0 +1,12 @@
+name=make
+version=4.3
+source=(https://ftp.gnu.org/gnu/make/make-4.3.tar.gz)
+
+do_build() {
+	cd make-$version
+	
+	./configure --prefix=/usr
+	make
+	make install
+
+}

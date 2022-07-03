@@ -1,0 +1,13 @@
+name=bc
+version=5.2.2
+source=(https://github.com/gavinhoward/bc/releases/download/5.2.2/bc-5.2.2.tar.xz)
+
+do_build() {
+	cd bc-$version
+
+	CC=gcc ./configure --prefix=/usr -G -O3
+
+	make
+	make install
+
+}

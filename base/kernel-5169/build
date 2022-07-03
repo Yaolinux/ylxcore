@@ -1,0 +1,23 @@
+name=kernel-5169
+version=5.16.9
+source=(http://repo.labo-linux.fr/sources/linux-5.16.9.tar.xz \
+	http://repo.labo-linux.fr/sources/config_64)
+
+do_build() {
+	cd linux-$version
+
+	make mrproper
+
+	cp ../config_64 ./.config
+
+	make
+	make modules_install
+
+	cp -iv arch/x86/boot/bzImage /boot/vmlinuz-5.16.9-lfs-11.1
+	cp -iv System.map /boot/System.map-5.16.9
+	cp -iv .config /boot/config-5.16.9
+	install -d /usr/share/doc/linux-5.16.9
+	cp -r Documentation/* /usr/share/doc/linux-5.16.9
+
+	install -v -m755 -d /etc/modprobe.d
+}

@@ -1,0 +1,11 @@
+version=3.8
+source=(http://ftp.gnu.org/gnu/diffutils/diffutils-$version.tar.xz)
+
+do_build() {
+cd diffutils-$version
+
+./configure --prefix=/usr --host=$LFS_TGT
+
+make
+make DESTDIR=$LFS install
+}

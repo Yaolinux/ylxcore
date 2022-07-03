@@ -1,0 +1,10 @@
+name=jinja2
+version=3.0.3
+source=(https://files.pythonhosted.org/packages/source/J/Jinja2/Jinja2-3.0.3.tar.gz)
+
+do_build() {
+	cd Jinja2-$version
+
+	python3 setup.py install --optimize=1
+
+}

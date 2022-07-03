@@ -1,0 +1,17 @@
+name=libelf
+version=0.186
+source=(https://sourceware.org/ftp/elfutils/0.186/elfutils-0.186.tar.bz2)
+
+do_build() {
+	cd elfutils-$version
+
+	./configure --prefix=/usr                \
+            --disable-debuginfod         \
+            --enable-libdebuginfod=dummy
+
+	make
+
+	make -C libelf install
+	install -vm644 config/libelf.pc /usr/lib/pkgconfig
+	rm /usr/lib/libelf.a
+}

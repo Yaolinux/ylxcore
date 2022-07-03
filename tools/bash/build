@@ -1,0 +1,16 @@
+version=5.1.16
+source=(http://ftp.gnu.org/gnu/bash/bash-$version.tar.gz)
+
+do_build() {
+cd bash-$version
+
+./configure --prefix=/usr                   \
+            --build=$(support/config.guess) \
+            --host=$LFS_TGT                 \
+            --without-bash-malloc
+
+make
+make DESTDIR=$LFS install
+
+ln -sv bash $LFS/bin/sh
+}

@@ -1,0 +1,30 @@
+name=openrc
+version=0.45
+source=(https://github.com/OpenRC/openrc/archive/refs/tags/0.45.tar.gz)
+
+do_build() {
+	cd openrc-$version
+
+	mkdir -p ../build && cd ../build
+
+	meson --prefix=/usr \
+	-Dbranding="\"Yaolinux\"" \
+        -Drootprefix=/usr \
+	-Dos=Linux \
+	-Dpam=true \
+	-Dpkgconfig=true \
+	-Dshell=/bin/bash \
+        -Dsplit-usr=true \
+        -Dsysvinit=true \
+	-Dtermcap=ncurses \
+        ../$name-$version
+
+	ninja 
+	DESTDIR='' ninja install
+
+	install -vdm755 /etc/openrc/
+	install -m 644 ../$name-$version/support/sysvinit/inittab /etc/openrc/inittab
+	cd ..
+	rm -r build/
+
+}

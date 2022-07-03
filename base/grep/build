@@ -1,0 +1,13 @@
+name=grep
+version=3.7
+source=(https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz)
+
+do_build() {
+	cd grep-$version
+
+	./configure --prefix=/usr
+
+	make
+	make install
+
+}

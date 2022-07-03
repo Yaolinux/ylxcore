@@ -1,0 +1,13 @@
+name=autoconf
+version=2.71
+source=(https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz)
+
+do_build() {
+	cd autoconf-$version
+
+	./configure --prefix=/usr
+
+	make
+	make install
+
+}

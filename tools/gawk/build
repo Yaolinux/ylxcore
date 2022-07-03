@@ -1,0 +1,14 @@
+version=5.1.1
+source=(http://ftp.gnu.org/gnu/gawk/gawk-$version.tar.xz)
+
+do_build() {
+cd gawk-$version
+
+sed -i 's/extras//' Makefile.in
+
+./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            --build=$(build-aux/config.guess)
+make
+make DESTDIR=$LFS install
+}

@@ -1,0 +1,14 @@
+name=libtool
+version=2.4.6
+source=(https://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.xz)
+
+do_build() {
+	cd libtool-$version
+
+	./configure --prefix=/usr
+
+	make
+	make install
+
+	rm -fv /usr/lib/libltdl.a
+}

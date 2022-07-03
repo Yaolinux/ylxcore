@@ -1,0 +1,13 @@
+version=3.9.9
+source=(http://www.python.org/ftp/python/$version/Python-$version.tar.xz)
+
+do_build() {
+cd Python-$version
+
+sed -i '/def add_multiarch_paths/a \        return' setup.py
+
+./configure --prefix=/tools --with-ensurepip=no
+
+make
+make install
+}

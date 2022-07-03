@@ -1,0 +1,10 @@
+name=man-pages
+version=5.13
+source=(https://www.kernel.org/pub/linux/docs/man-pages/man-pages-5.13.tar.xz)
+
+do_build() {
+	cd man-pages-$version
+
+	make prefix=/usr install
+
+}

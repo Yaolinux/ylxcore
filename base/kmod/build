@@ -1,0 +1,22 @@
+name=kmod
+version=29
+source=(https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-29.tar.xz)
+
+do_build() {
+	cd kmod-$version
+	./configure --prefix=/usr          \
+            --sysconfdir=/etc      \
+            --with-openssl         \
+            --with-xz              \
+            --with-zstd            \
+            --with-zlib4
+
+	make
+	make install
+
+	for target in depmod insmod modinfo modprobe rmmod; do
+	  ln -sfv ../bin/kmod /usr/sbin/$target
+	done
+
+	ln -sfv kmod /usr/bin/lsmod
+}

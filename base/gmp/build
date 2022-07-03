@@ -1,0 +1,21 @@
+name=gmp
+version=6.2.1
+source=(https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz)
+
+do_build() {
+	cd gmp-$version
+
+	cp -v configfsf.guess config.guess
+	cp -v configfsf.sub   config.sub
+
+	./configure --prefix=/usr    \
+            --enable-cxx     \
+            --disable-static \
+            --docdir=/usr/share/doc/gmp-6.2.1
+
+	make
+	make html
+
+	make install
+	make install-html
+}

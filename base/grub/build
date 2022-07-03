@@ -1,0 +1,17 @@
+name=grub
+version=2.06
+source=(https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz)
+
+do_build() {
+	cd grub-$version
+
+	./configure --prefix=/usr          \
+            --sysconfdir=/etc      \
+            --disable-efiemu       \
+            --disable-werror
+
+	make
+	make install
+
+	mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+}

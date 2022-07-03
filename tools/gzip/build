@@ -1,0 +1,11 @@
+version=1.11
+source=(http://ftp.gnu.org/gnu/gzip/gzip-$version.tar.xz)
+
+do_build() {
+cd gzip-$version
+
+./configure --prefix=/usr --host=$LFS_TGT
+
+make
+make DESTDIR=$LFS install
+}

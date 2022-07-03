@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -f .order ]
+then
+
+	while read LINE; do
+		if [ ! -d $LINE ]
+		then
+			echo "$LINE does not exist"
+		fi
+	done <.order
+fi

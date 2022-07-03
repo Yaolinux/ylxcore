@@ -1,0 +1,18 @@
+version=2.38
+source=(http://ftp.gnu.org/gnu/binutils/binutils-$version.tar.xz)
+
+do_build() {
+cd binutils-$version
+
+mkdir -v build
+cd build
+
+../configure --prefix=$LFS/tools \
+             --with-sysroot=$LFS \
+             --target=$LFS_TGT   \
+             --disable-nls       \
+             --disable-werror
+
+make
+make install
+}

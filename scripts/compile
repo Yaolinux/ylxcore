@@ -5,10 +5,15 @@ DIR_REPO="$LFS/sources"
 LOG_DIR="../log"
 CHOICE=$1
 
-if [ $(whoami) != "lfs" ]
+#if [ $(whoami) != "lfs" ]
+#then
+#	echo "You must be a LFS user"
+#	exit 1
+#fi
+
+if [ ! -d $LOG_DIR ]
 then
-	echo "You must be a LFS user"
-	exit 1
+	mkdir -pv $LOG_DIR
 fi
 
 case $CHOICE in
@@ -25,13 +30,60 @@ case $CHOICE in
             wget --progress=bar:force -nv "$URL_REPO/$file" -P "$DIR_REPO"
         done < wlist
         ;;
-    "chroot")
-        echo "Compile chroot"
-        PASS="chroot"
+    "tools")
+        echo "Compile tools"
+        PASS="tools"
         DIR_PASS="../$PASS"
         if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
         then
             echo "The chroot directory or the file .order is/are missing."
+            exit 10
+        fi
+
+        while read PKG
+        do
+
+		NEXT="true"
+
+            if [ ! -d $DIR_PASS/$PKG ]
+            then
+                echo -e "===> The package $PKG does not exist"
+                exit 15
+            fi
+
+		if [ -f  ${LOG_DIR}/$PKG.log ]
+		then
+			if grep -q "=> @COMPIL_DONE@" ${LOG_DIR}/$PKG.log
+			then
+				NEXT="false"
+			else
+				NEXT="true"
+			fi
+
+		fi
+
+		if [ $NEXT == "true" ]
+		then
+			echo "==> $PKG go to compile"
+
+			if ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG"
+			then
+				echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
+			else
+				break
+			fi
+
+		fi
+
+        done < ../$PASS/.order
+        ;;
+    "chroot")
+	echo "Compile chroot"
+        PASS="chroot"
+        DIR_PASS="../$PASS"
+        if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
+        then
+            echo "The base directory or the file .order is/are missing."
             exit 10
         fi
 
@@ -68,6 +120,53 @@ case $CHOICE in
 			fi
 
 		fi
+
+        done < ../$PASS/.order
+        ;;
+    "base")
+        echo "Compile base"
+        PASS="base"
+        DIR_PASS="../$PASS"
+        if [ ! -d $DIR_PASS ] ||  [ ! -e $DIR_PASS/.order ]
+        then
+            echo "The base directory or the file .order is/are missing."
+            exit 10
+        fi
+
+        while read PKG
+        do
+
+                NEXT="true"
+
+            if [ ! -d $DIR_PASS/$PKG ]
+            then
+                echo -e "===> The package $PKG does not exist"
+                exit 15
+            fi
+
+                if [ -f  ${LOG_DIR}/$PKG.log ]
+                then
+                        if grep -q "=> @COMPIL_DONE@" ${LOG_DIR}/$PKG.log
+                        then
+                                NEXT="false"
+                        else
+                                NEXT="true"
+                        fi
+
+                fi
+
+                if [ $NEXT == "true" ]
+                then
+
+                        ./ylxbuild -bp "$DIR_PASS/$PKG" -n "$PKG" 2>&1|tee ${LOG_DIR}/$PKG.log || exit 1
+			if [ ${PIPESTATUS[0]} == 0 ]
+                        then
+                                echo "=> @COMPIL_DONE@" >> ${LOG_DIR}/$PKG.log
+                        else
+                                break
+                        fi
+
+                fi
 
         done < ../$PASS/.order
         ;;

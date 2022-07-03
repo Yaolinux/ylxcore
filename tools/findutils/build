@@ -1,0 +1,15 @@
+version=4.9.0
+source=(http://ftp.gnu.org/gnu/findutils/findutils-$version.tar.xz)
+
+do_build() {
+cd findutils-$version
+
+./configure --prefix=/usr                   \
+            --localstatedir=/var/lib/locate \
+            --host=$LFS_TGT                 \
+            --build=$(build-aux/config.guess)
+
+make
+make DESTDIR=$LFS install
+
+}
