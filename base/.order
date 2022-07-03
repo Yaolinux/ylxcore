@@ -75,6 +75,7 @@ e2fsprogs
 pam
 sysklogd
 openrc
+sqlite3
 kernel-5169
 eudev-scripts
 dhcpcd
