@@ -50,6 +50,16 @@ export_and_mount() {
 	ln -svf /bin/bash /bin/sh
 }
 
+create_download_sources() {
+	mkdir -v $LFS/sources
+	chmod -v a+wt $LFS/sources
+	if [  -d $LFS/sources ]
+	then
+		wget $URL_WGETLIST
+		wget --input-file=wgetlist --continue --directory-prefix=$LFS/sources
+	fi
+}
+
 create_directories() {
 	mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
 
@@ -97,6 +107,7 @@ init_toolschain() {
 			exist_partitions
 			format_partitions
 			export_and_mount
+			create_download_sources
 			create_directories
 			create_lfs_user
 		;;
@@ -245,7 +256,7 @@ help() {
 }
 
 [ -z "$MOUNT_POINT" ] && MOUNT_POINT="/mnt/lfs"
-
+[ -z "$URL_WGETLIST" ] && URL_WGETLIST="https://download.yaolinux.labonetwork.fr/ylxcore/sources/wgetlist"
 case $1 in
 	"tools")
 		echo "Init tools"
