@@ -119,9 +119,10 @@ init_toolschain() {
 }
 
 init_chroot_chown() {
-	chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
+	echo $LFS
+	chown --from lfs -R root:root $LFS/{usr,var,etc,tools}
 	case $(uname -m) in
-	  x86_64) chown -R root:root $LFS/lib64 ;;
+		x86_64) chown --from lfs -R root:root $LFS/lib64 ;;
 	esac
 }
 
@@ -136,22 +137,26 @@ init_chroot_node() {
 
 init_chroot_link() {
 	mount -v --bind /dev $LFS/dev
-	mount -v --bind /dev/pts $LFS/dev/pts
+	mount -vt devpts devpts -o gid=5,mode=0620 $LFS/dev/pts
 	mount -vt proc proc $LFS/proc
 	mount -vt sysfs sysfs $LFS/sys
 	mount -vt tmpfs tmpfs $LFS/run
 
 	if [ -h $LFS/dev/shm ]; then
-	  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+		install -v -d -m 1777 $LFS$(realpath /dev/shm)
+	else
+		mount -vt tmpfs -o nosuid,nodev tmpfs $LFS/dev/shm
 	fi
 }
 
 init_postchroot_mkdir() {
 	mkdir -pv /{boot,home,mnt,opt,srv}
+
 	mkdir -pv /etc/{opt,sysconfig}
 	mkdir -pv /lib/firmware
 	mkdir -pv /media/{floppy,cdrom}
 	mkdir -pv /usr/{,local/}{include,src}
+	mkdir -pv /usr/lib/locale
 	mkdir -pv /usr/local/{bin,lib,sbin}
 	mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
 	mkdir -pv /usr/{,local/}share/{misc,terminfo,zoneinfo}
@@ -164,7 +169,6 @@ init_postchroot_mkdir() {
 
 	install -dv -m 0750 /root
 	install -dv -m 1777 /tmp /var/tmp
-
 	ln -sv /proc/self/mounts /etc/mtab
 }
 
@@ -181,8 +185,16 @@ root:x:0:0:root:/root:/bin/bash
 bin:x:1:1:bin:/dev/null:/usr/bin/false
 daemon:x:6:6:Daemon User:/dev/null:/usr/bin/false
 messagebus:x:18:18:D-Bus Message Daemon User:/run/dbus:/usr/bin/false
+systemd-journal-gateway:x:73:73:systemd Journal Gateway:/:/usr/bin/false
+systemd-journal-remote:x:74:74:systemd Journal Remote:/:/usr/bin/false
+systemd-journal-upload:x:75:75:systemd Journal Upload:/:/usr/bin/false
+systemd-network:x:76:76:systemd Network Management:/:/usr/bin/false
+systemd-resolve:x:77:77:systemd Resolver:/:/usr/bin/false
+systemd-timesync:x:78:78:systemd Time Synchronization:/:/usr/bin/false
+systemd-coredump:x:79:79:systemd Core Dumper:/:/usr/bin/false
 uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/usr/bin/false
-nobody:x:99:99:Unprivileged User:/dev/null:/usr/bin/false
+systemd-oom:x:81:81:systemd Out Of Memory Daemon:/:/usr/bin/false
+nobody:x:65534:65534:Unprivileged User:/dev/null:/usr/bin/false
 EOF
 }
 
@@ -202,17 +214,25 @@ dialout:x:10:
 audio:x:11:
 video:x:12:
 utmp:x:13:
-usb:x:14:
 cdrom:x:15:
 adm:x:16:
 messagebus:x:18:
+systemd-journal:x:23:
 input:x:24:
 mail:x:34:
 kvm:x:61:
+systemd-journal-gateway:x:73:
+systemd-journal-remote:x:74:
+systemd-journal-upload:x:75:
+systemd-network:x:76:
+systemd-resolve:x:77:
+systemd-timesync:x:78:
+systemd-coredump:x:79:
 uuidd:x:80:
+systemd-oom:x:81:
 wheel:x:97:
-nogroup:x:99:
 users:x:999:
+nogroup:x:65534:
 EOF
 }
 
@@ -228,6 +248,7 @@ init_postchroot_applyconfig() {
 	chmod -v 664  /var/log/lastlog
 	chmod -v 600  /var/log/btmp
 	exit
+	echo "Config is apply, please reconnect to chroot"
 }
 
 init_chroot() {
@@ -255,8 +276,10 @@ help() {
 	echo "postchroot : Init the folders ans files after enter in chroot"
 }
 
+[ -z "$LFS" ] && LFS="/mnt/lfs"
 [ -z "$MOUNT_POINT" ] && MOUNT_POINT="/mnt/lfs"
 [ -z "$URL_WGETLIST" ] && URL_WGETLIST="https://download.yaolinux.labonetwork.fr/ylxcore/sources/wgetlist"
+
 case $1 in
 	"tools")
 		echo "Init tools"
