@@ -1,4 +1,4 @@
-version=0.21
+version=0.26
 source=(https://ftp.gnu.org/gnu/gettext/gettext-$version.tar.xz)
 
 do_build() {
