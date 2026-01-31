@@ -1,10 +1,13 @@
-version=3.8
+version=3.12
 source=(http://ftp.gnu.org/gnu/diffutils/diffutils-$version.tar.xz)
 
 do_build() {
 cd diffutils-$version
 
-./configure --prefix=/usr --host=$LFS_TGT
+./configure --prefix=/usr   \
+            --host=$LFS_TGT \
+            gl_cv_func_strcasecmp_works=y \
+            --build=$(./build-aux/config.guess)
 
 make
 make DESTDIR=$LFS install

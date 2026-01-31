@@ -39,5 +39,4 @@ readelf -l a.out | grep ': /lib'
 rm -v a.out dummy.log
 
 
-#$LFS/tools/libexec/gcc/$LFS_TGT/11.2.0/install-tools/mkheaders
 }

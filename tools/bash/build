@@ -1,4 +1,4 @@
-version=5.1.16
+version=5.3
 source=(http://ftp.gnu.org/gnu/bash/bash-$version.tar.gz)
 
 do_build() {

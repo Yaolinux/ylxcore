@@ -1,4 +1,4 @@
-version=2.38
+version=2.45
 source=(http://ftp.gnu.org/gnu/binutils/binutils-$version.tar.xz)
 
 do_build() {
@@ -15,9 +15,14 @@ cd build
     --host=$LFS_TGT            \
     --disable-nls              \
     --enable-shared            \
+    --enable-gprofng=no        \
     --disable-werror           \
-    --enable-64-bit-bfd
+    --enable-64-bit-bfd        \
+    --enable-new-dtags         \
+    --enable-default-hash-style=gnu
 
 make
 make DESTDIR=$LFS install
+
+rm -v $LFS/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 }

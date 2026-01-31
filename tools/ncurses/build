@@ -1,16 +1,16 @@
-version=6.3
-source=(ftp://invisible-island.net/ncurses/ncurses-$version.tar.gz)
+version=6.5-20250809
+source=(ftp://invisible-island.net/ncurses/ncurses-$version.tgz)
 
 do_build() {
 cd ncurses-$version
 
-sed -i s/mawk// configure
 
 mkdir build
 pushd build
-  ../configure
+../configure --prefix=$LFS/tools AWK=gawk
   make -C include
   make -C progs tic
+  install progs/tic $LFS/tools/bin
 popd
 
 ./configure --prefix=/usr                \
@@ -19,15 +19,19 @@ popd
             --mandir=/usr/share/man      \
             --with-manpage-format=normal \
             --with-shared                \
+            --without-normal             \
+            --with-cxx-shared            \
             --without-debug              \
             --without-ada                \
-            --without-normal             \
             --disable-stripping          \
-            --enable-widec
+            AWK=gawk
 
 make
 
-make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
-echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
+
+make DESTDIR=$LFS install
+ln -sv libncursesw.so $LFS/usr/lib/libncurses.so
+sed -e 's/^#if.*XOPEN.*$/#if 1/' \
+    -i $LFS/usr/include/curses.h
 
 }

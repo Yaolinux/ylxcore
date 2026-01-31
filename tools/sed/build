@@ -1,11 +1,12 @@
-version=4.8
+version=4.9
 source=(http://ftp.gnu.org/gnu/sed/sed-$version.tar.xz)
 
 do_build() {
 cd sed-$version
 
 ./configure --prefix=/usr   \
-            --host=$LFS_TGT
+            --host=$LFS_TGT \
+	    --build=$(./build-aux/config.guess)
 make
 make DESTDIR=$LFS install
 }

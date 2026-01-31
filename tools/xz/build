@@ -1,4 +1,4 @@
-version=5.2.5
+version=5.8.1
 source=(http://tukaani.org/xz/xz-$version.tar.xz)
 
 do_build() {
@@ -8,8 +8,10 @@ cd xz-$version
             --host=$LFS_TGT                   \
             --build=$(build-aux/config.guess) \
             --disable-static                  \
-            --docdir=/usr/share/doc/xz-5.2.5
+            --docdir=/usr/share/doc/xz-5.8.1
 
 make
 make DESTDIR=$LFS install
+
+rm -v $LFS/usr/lib/liblzma.la
 }

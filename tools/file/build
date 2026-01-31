@@ -1,4 +1,4 @@
-version=5.41
+version=5.46
 source=(ftp://ftp.astron.com/pub/file/file-$version.tar.gz)
 
 do_build() {
@@ -17,4 +17,6 @@ popd
 
 make FILE_COMPILE=$(pwd)/build/src/file
 make DESTDIR=$LFS install
+
+rm -v $LFS/usr/lib/libmagic.la
 }
