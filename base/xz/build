@@ -1,13 +1,13 @@
 name=xz
-version=5.2.5
-source=(https://tukaani.org/xz/xz-5.2.5.tar.xz)
+version=5.8.1
+source=(https://tukaani.org/xz/xz-$version.tar.xz)
 
 do_build() {
 	cd xz-$version
 
 	./configure --prefix=/usr    \
             --disable-static \
-            --docdir=/usr/share/doc/xz-5.2.5
+            --docdir=/usr/share/doc/xz-$version
 
 	make
 	make install

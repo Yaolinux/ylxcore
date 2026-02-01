@@ -1,17 +1,16 @@
 name=gmp
-version=6.2.1
-source=(https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz)
+version=6.3.0
+source=(https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz)
 
 do_build() {
 	cd gmp-$version
 
-	cp -v configfsf.guess config.guess
-	cp -v configfsf.sub   config.sub
+	sed -i '/long long t1;/,+1s/()/(...)/' configure
 
 	./configure --prefix=/usr    \
             --enable-cxx     \
             --disable-static \
-            --docdir=/usr/share/doc/gmp-6.2.1
+            --docdir=/usr/share/doc/gmp-$version
 
 	make
 	make html

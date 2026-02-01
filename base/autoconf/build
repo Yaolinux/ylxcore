@@ -1,6 +1,6 @@
 name=autoconf
-version=2.71
-source=(https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz)
+version=2.72
+source=(https://ftp.gnu.org/gnu/autoconf/autoconf-$version.tar.xz)
 
 do_build() {
 	cd autoconf-$version

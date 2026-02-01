@@ -1,14 +1,13 @@
 name=libffi
-version=3.4.2
-source=(https://github.com/libffi/libffi/releases/download/v3.4.2/libffi-3.4.2.tar.gz)
+version=3.5.2
+source=(https://github.com/libffi/libffi/releases/download/v$version/libffi-$version.tar.gz)
 
 do_build() {
 	cd libffi-$version
 
 	./configure --prefix=/usr          \
             --disable-static       \
-            --with-gcc-arch=native \
-            --disable-exec-static-tramp
+            --with-gcc-arch=native 
 
 	make
 	make install

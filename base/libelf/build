@@ -1,9 +1,10 @@
 name=libelf
-version=0.186
-source=(https://sourceware.org/ftp/elfutils/0.186/elfutils-0.186.tar.bz2)
+version=3.12
+tarversion=0.193
+source=(https://sourceware.org/ftp/elfutils/$version/elfutils-$tarversion.tar.bz2)
 
 do_build() {
-	cd elfutils-$version
+	cd elfutils-$tarversion
 
 	./configure --prefix=/usr                \
             --disable-debuginfod         \

@@ -1,14 +1,16 @@
 name=procps
-version=3.3.17
-source=(https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-3.3.17.tar.xz)
+version=4.0.5
+source=(https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-$version.tar.xz)
 
 do_build() {
-	cd procps-$version
+	cd procps-ng-$version
 
-	./configure --prefix=/usr                            \
-            --docdir=/usr/share/doc/procps-ng-3.3.17 \
-            --disable-static                         \
-            --disable-kill                           \
+	./configure --prefix=/usr                           \
+            --docdir=/usr/share/doc/procps-ng-$version \
+            --disable-static                        \
+            --disable-kill                          \
+            --enable-watch8bit                      \
+            --with-systemd
 
 	make
 	make install

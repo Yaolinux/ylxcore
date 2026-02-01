@@ -1,6 +1,6 @@
 name=vim
-version=8.2.4383
-source=(https://anduin.linuxfromscratch.org/LFS/vim-8.2.4383.tar.gz)
+version=9.1.1629 
+source=(https://anduin.linuxfromscratch.org/LFS/vim-$version.tar.gz)
 
 do_build() {
 	cd vim-$version
@@ -17,7 +17,7 @@ do_build() {
 	    ln -sv vim.1 $(dirname $L)/vi.1
 	done
 
-	ln -sv ../vim/vim82/doc /usr/share/doc/vim-8.2.4383
+	ln -sv ../vim/vim91/doc /usr/share/doc/vim-$version
 
 cat > /etc/vimrc << "EOF"
 " Début de /etc/vimrc

@@ -1,12 +1,18 @@
 name=glibc
-version=2.35
-source=(https://ftp.gnu.org/gnu/glibc/glibc-2.35.tar.xz
-	https://www.linuxfromscratch.org/patches/lfs/11.1/glibc-2.35-fhs-1.patch)
+version=2.42
+source=(https://ftp.gnu.org/gnu/glibc/glibc-$version.tar.xz
+	https://www.linuxfromscratch.org/patches/lfs/11.1/glibc-2.42-fhs-1.patch)
 
 do_build() {
 	cd glibc-$version
 
-	patch -Np1 -i ../glibc-2.35-fhs-1.patch
+	patch -Np1 -i ../glibc-2.42-fhs-1.patch
+
+	sed -e '/unistd.h/i #include <string.h>' \
+    -e '/libc_rwlock_init/c\
+  __libc_rwlock_define_initialized (, reset_lock);\
+  memcpy (&lock, &reset_lock, sizeof (lock));' \
+    -i stdlib/abort.c 
 
 
 	mkdir -v build
@@ -14,16 +20,15 @@ do_build() {
 
 	echo "rootsbindir=/usr/sbin" > configparms
 
-	../configure --prefix=/usr                            \
-             --disable-werror                         \
-             --enable-kernel=3.2                      \
-             --enable-stack-protector=strong          \
-             --with-headers=/usr/include              \
-             libc_cv_slibdir=/usr/lib
+	../configure --prefix=/usr                   \
+             --disable-werror                \
+             --disable-nscd                  \
+             libc_cv_slibdir=/usr/lib        \
+             --enable-stack-protector=strong \
+             --enable-kernel=5.4
 
 	make
 
-	make check
 	touch /etc/ld.so.conf
 	sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 	make install
@@ -41,13 +46,13 @@ do_build() {
 	localedef -i ja_JP -f SHIFT_JIS ja_JP.SJIS 2> /dev/null || true
 
 cat > /etc/nsswitch.conf << "EOF"
-# Begin /etc/nsswitch.conf
+# Début de /etc/nsswitch.conf
 
-passwd: files
-group: files
-shadow: files
+passwd: files systemd
+group: files systemd
+shadow: files systemd
 
-hosts: files dns
+hosts: mymachines resolve [!UNAVAIL=return] files myhostname dns
 networks: files
 
 protocols: files
@@ -55,15 +60,13 @@ services: files
 ethers: files
 rpc: files
 
-# End /etc/nsswitch.conf
+# Fin de /etc/nsswitch.conf
 EOF
 
+
 cat > /etc/ld.so.conf << "EOF"
-# Début de /etc/ld.so.conf
 /usr/local/lib
 /opt/lib
-
-# Ajout d'un répertoire include
 include /etc/ld.so.conf.d/*.conf
 
 EOF

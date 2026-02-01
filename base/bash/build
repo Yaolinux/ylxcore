@@ -1,12 +1,12 @@
 name=bash
-version=5.1.16
-source=(https://ftp.gnu.org/gnu/bash/bash-5.1.16.tar.gz)
+version=5.3
+source=(https://ftp.gnu.org/gnu/bash/bash-$version.tar.gz)
 
 do_build() {
 	cd bash-$version
 
 	./configure --prefix=/usr                      \
-            --docdir=/usr/share/doc/bash-5.1.16 \
+            --docdir=/usr/share/doc/bash-$version \
             --without-bash-malloc              \
             --with-installed-readline
 

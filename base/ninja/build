@@ -1,11 +1,11 @@
 name=ninja
-version=1.10.2
-source=(https://github.com/ninja-build/ninja/archive/v1.10.2/ninja-1.10.2.tar.gz)
+version=1.13.1
+source=(https://github.com/ninja-build/ninja/archive/v$version/ninja-$version.tar.gz)
 
 do_build() {
 	cd ninja-$version
 	
-	python3 configure.py --bootstrap
+	python3 configure.py --bootstrap --verbose
 
 	install -vm755 ninja /usr/bin/
 	install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja

@@ -1,6 +1,6 @@
 name=libpipeline
-version=1.5.5
-source=(https://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.5.tar.gz)
+version=1.5.8
+source=(https://download.savannah.gnu.org/releases/libpipeline/libpipeline-$version.tar.gz)
 
 do_build() {
 	cd libpipeline-$version

@@ -1,6 +1,6 @@
 name=perl-xml-parser
-version=2.46
-source=(https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz)
+version=2.47
+source=(https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-$version.tar.gz)
 
 do_build() {
 	cd XML-Parser-$version

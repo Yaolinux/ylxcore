@@ -1,6 +1,6 @@
 name=make
-version=4.3
-source=(https://ftp.gnu.org/gnu/make/make-4.3.tar.gz)
+version=4.4.1
+source=(https://ftp.gnu.org/gnu/make/make-$version.tar.gz)
 
 do_build() {
 	cd make-$version

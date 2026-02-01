@@ -1,6 +1,6 @@
 name=libtool
-version=2.4.6
-source=(https://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.xz)
+version=2.5.4
+source=(https://ftp.gnu.org/gnu/libtool/libtool-$version.tar.xz)
 
 do_build() {
 	cd libtool-$version

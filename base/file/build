@@ -1,6 +1,6 @@
 name=file
-version=5.41
-source=(https://astron.com/pub/file/file-5.41.tar.gz)
+version=5.46
+source=(https://astron.com/pub/file/file-$version.tar.gz)
 
 do_build() {
 	cd file-$version

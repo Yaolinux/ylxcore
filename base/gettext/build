@@ -1,13 +1,13 @@
 name=gettext
-version=0.21
-source=(https://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz)
+version=0.26
+source=(https://ftp.gnu.org/gnu/gettext/gettext-$version.tar.xz)
 
 do_build() {
 	cd gettext-$version
 
 	./configure --prefix=/usr    \
             --disable-static \
-            --docdir=/usr/share/doc/gettext-0.21
+            --docdir=/usr/share/doc/gettext-$version
 
 	make
 	make install

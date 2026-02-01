@@ -1,9 +1,13 @@
 name=grub
-version=2.06
-source=(https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz)
+version=2.12
+source=(https://ftp.gnu.org/gnu/grub/grub-$version.tar.xz)
 
 do_build() {
 	cd grub-$version
+
+	unset {C,CPP,CXX,LD}FLAGS
+
+	echo depends bli part_gpt > grub-core/extra_deps.lst
 
 	./configure --prefix=/usr          \
             --sysconfdir=/etc      \

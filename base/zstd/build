@@ -1,11 +1,12 @@
 name=zstd
-version=1.5.2
-source=(https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz)
+version=1.5.7
+source=(https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz)
 
 do_build() {
 	cd zstd-$version
 
-	make
+	make prefix=/usr
+	make check
 	make PREFIX=/usr install
 
 	rm -v /usr/lib/libzstd.a

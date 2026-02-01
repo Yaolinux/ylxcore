@@ -1,6 +1,6 @@
 name=diffutils
-version=3.8
-source=(https://ftp.gnu.org/gnu/diffutils/diffutils-3.8.tar.xz)
+version=3.12
+source=(https://ftp.gnu.org/gnu/diffutils/diffutils-$version.tar.xz)
 
 do_build() {
 	cd diffutils-$version

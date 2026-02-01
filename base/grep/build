@@ -1,9 +1,11 @@
 name=grep
-version=3.7
-source=(https://ftp.gnu.org/gnu/grep/grep-3.7.tar.xz)
+version=3.12
+source=(https://ftp.gnu.org/gnu/grep/grep-$version.tar.xz)
 
 do_build() {
 	cd grep-$version
+
+	sed -i "s/echo/#echo/" src/egrep.sh
 
 	./configure --prefix=/usr
 

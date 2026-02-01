@@ -1,6 +1,6 @@
 name=sed
-version=4.8
-source=(https://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz)
+version=4.9
+source=(https://ftp.gnu.org/gnu/sed/sed-$version.tar.xz)
 
 do_build() {
 	cd sed-$version
@@ -11,7 +11,7 @@ do_build() {
 	make html
 
 	make install
-	install -d -m755           /usr/share/doc/sed-4.8
-	install -m644 doc/sed.html /usr/share/doc/sed-4.8
+	install -d -m755           /usr/share/doc/sed-$version
+	install -m644 doc/sed.html /usr/share/doc/sed-$version
 
 }

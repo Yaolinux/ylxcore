@@ -293,6 +293,10 @@ case $1 in
 		echo "Init postchroot"
 		init_postchroot
 		;;
+	"pre-chroot")
+		echo "Mount all requirements for chroot"
+		init_chroot_link
+		;;
 	*)
 		help
 		;;

@@ -1,6 +1,6 @@
 name=iproute2
-version=5.16.0
-source=(https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.16.0.tar.xz)
+version=6.16.0
+source=(https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-$version.tar.xz)
 
 do_build() {
 	cd iproute2-$version
@@ -11,6 +11,6 @@ do_build() {
 	make
 	make SBINDIR=/usr/sbin install
 
-	mkdir -pv             /usr/share/doc/iproute2-5.16.0
-	cp -v COPYING README* /usr/share/doc/iproute2-5.16.0
+	mkdir -pv             /usr/share/doc/iproute2-$version
+	cp -v COPYING README* /usr/share/doc/iproute2-$version
 }

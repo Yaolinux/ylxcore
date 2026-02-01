@@ -1,6 +1,6 @@
 name=tzdata
-version=2021e
-source=(http://repo.labo-linux.fr/sources/tzdata2021e.tar.gz)
+version=2025b
+source=(http://repo.labo-linux.fr/sources/tzdata$version.tar.gz)
 
 do_build() {
 

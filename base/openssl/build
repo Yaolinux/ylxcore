@@ -1,6 +1,6 @@
 name=openssl
-version=3.0.1
-source=(https://www.openssl.org/source/openssl-3.0.1.tar.gz)
+version=3.5.2
+source=(https://www.openssl.org/source/openssl-$version.tar.gz)
 
 do_build() {
 	cd openssl-$version
@@ -14,7 +14,7 @@ do_build() {
 	make
 	sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
 	make MANSUFFIX=ssl install
-	mv -v /usr/share/doc/openssl /usr/share/doc/openssl-3.0.1
-	cp -vfr doc/* /usr/share/doc/openssl-3.0.1
+	mv -v /usr/share/doc/openssl /usr/share/doc/openssl-$version
+	cp -vfr doc/* /usr/share/doc/openssl-$version
 
 }

@@ -3,7 +3,6 @@ version=1.0
 source=()
 
 do_build() {
-
 cat > /etc/resolv.conf << "EOF"
 # Début de /etc/resolv.conf
 
@@ -22,6 +21,14 @@ cat > /etc/hosts << "EOF"
 
 # End /etc/hosts
 EOF
+
+cat > /etc/adjtime << "EOF"
+0.0 0 0.0
+0
+LOCAL
+EOF
+
+
 
 cat > /etc/inputrc << "EOF"
 # Début de /etc/inputrc
